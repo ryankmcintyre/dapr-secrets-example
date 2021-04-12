@@ -20,14 +20,16 @@ namespace DaprSecretsExample
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(config =>
+                .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var daprClient = new DaprClientBuilder().Build();
-                    // var secretDescriptors = new List<DaprSecretDescriptor>
-                    // {
-                    //     new DaprSecretDescriptor("eshopsecrets")
-                    // };
                     config.AddDaprSecretStore("dapr-secretstore", daprClient);
+
+                    // Uncomment the below if you want to use .NET Secret Manager instead of Dapr secrets when in local development
+                    // if (hostContext.HostingEnvironment.IsDevelopment())
+                    // {
+                    //     config.AddUserSecrets<Program>();
+                    // }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
